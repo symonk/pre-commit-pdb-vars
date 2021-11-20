@@ -1,0 +1,6 @@
+- id: pdb-vars
+  name: pdb-vars
+  description: Prevent variable names matching pdb shortcuts.
+  entry: pdb_vars
+  language: python
+  types: [python]
