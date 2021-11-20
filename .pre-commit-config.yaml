@@ -31,3 +31,7 @@ repos:
     hooks:
       - id: flake8
         args: ["--max-line-length=120"]
+  - repo: https://github.com/symonk/pre-commit-pdb-vars.git
+    rev: 0.1.0
+    hooks:
+      - id: pdb-vars
