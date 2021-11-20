@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "pre-commit-pdb-vars"
+name = "pdbvars"
 version = "0.1.0"
 description = "A pre-commit framework hook to prevent variable names matching pdb shortcuts."
-authors = ["symonk <jackofspaces@gmail.com>"]
+authors = ["symonk"]
 
 [tool.poetry.scripts]
-pdb_vars = "pdb_vars:main"
+pdb_vars = "pdbvars.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
