@@ -1,5 +1,7 @@
 import argparse
 import ast
+import dataclasses
+import os
 import typing
 
 PDB_SHORTCUTS = (
@@ -53,6 +55,16 @@ def main(argv: typing.Optional[typing.Sequence[str]] = None) -> int:
     return check_vars(args.filenames)
 
 
+@dataclasses.dataclass(frozen=True)
+class Violation:
+    mod: str
+    line_no: int
+    shortcut: str
+
+    def __repr__(self) -> str:
+        return f"Prohibited PDB Command variable `{self.shortcut}` at: {self.mod}:{self.line_no}"
+
+
 def check_vars(filenames: str):
     """
     For each of the file paths passed to the hook; parse the AST for the given file
@@ -61,24 +73,28 @@ def check_vars(filenames: str):
     :param filenames: Sequence of files passed to the hook
     :return: The exit code.
     """
+
+    def _walk_nodes(root):
+        return [
+            node
+            for node in sorted(
+                {
+                    node
+                    for node in ast.walk(root)
+                    if isinstance(node, ast.Name) and not isinstance(node.ctx, ast.Load)
+                }
+            )
+        ]
+
     for file in filenames:
         with open(file) as f:
             root = ast.parse(f.read())
-            names = [
-                name
-                for name in sorted(
-                    {
-                        node.id
-                        for node in ast.walk(root)
-                        if isinstance(node, ast.Name)
-                        and not isinstance(node.ctx, ast.Load)
-                    }
-                )
-                if matches(name)
-            ]
-            for name in names:
-                print(f"Variable named: `{name}` mirrors a pdb command, rename it.")
-                return 1
+            for node in _walk_nodes(root):
+                for prohibited in PDB_SHORTCUTS:
+                    if node.id == prohibited:
+                        print(Violation(os.path.abspath(file), node.lineno, node.id))
+                        return 1
+
     return 0
 
 
