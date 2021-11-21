@@ -124,7 +124,10 @@ def check_vars(filenames: str):
     visitor = PdbParser()
     for file in filenames:
         visitor.current_file = file
-        _walk_nodes(file, visitor)
+        try:
+            _walk_nodes(file, visitor)
+        except SyntaxError:
+            return 1  # invalid python file?
         if visitor.violations:
             for violation in visitor.violations:
                 print(violation)
