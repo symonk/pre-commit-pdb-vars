@@ -11,7 +11,7 @@ A pre-commit framework hook that prevents variable names matching pdb shortcuts
       - id: pdb-vars
 ```
 
-```shell
+```console
 [INFO] This may take a few minutes...
 black....................................................................Passed
 Trim Trailing Whitespace.................................................Passed
