@@ -22,16 +22,14 @@ repos:
     rev: v0.910-1
     hooks:
       - id: mypy
-        files: restpite/
+        files: pdbvars/
         args: []
-        additional_dependencies:
-          - types-requests
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
         args: ["--max-line-length=120"]
   - repo: https://github.com/symonk/pre-commit-pdb-vars.git
-    rev: 0.2.0
+    rev: 0.3.0
     hooks:
       - id: pdb-vars
