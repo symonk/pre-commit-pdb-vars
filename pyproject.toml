@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdbvars"
-version = "0.4.0"
+version = "0.4.1"
 description = "A pre-commit framework hook to prevent variable names matching pdb shortcuts."
 authors = ["symonk"]
 

@@ -35,7 +35,7 @@ PDB_SHORTCUTS = (
     "interact",
     "alias",
     "unalias",
-    "run",  # Threading.Thread().run() isn't a fan, bypass for now.
+    # "run", Threading.Thread().run() isn't a fan, bypass for now.
     "restart",
     "q",
     "debug",
