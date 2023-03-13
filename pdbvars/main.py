@@ -114,7 +114,7 @@ def _walk_nodes(filepath: str, visitor: ast.NodeVisitor):
         visitor.visit(ast.parse(f.read(), filename=filepath))
 
 
-def check_vars(filenames: typing.Iterable[str]) -> int: 
+def check_vars(filenames: typing.List[str], ignore: typing.Set[str]) -> int: 
     """
     For each of the file paths passed to the hook; parse the AST for the given file
     and find all variable names, then match them against the predefined `shortcuts`
@@ -123,7 +123,7 @@ def check_vars(filenames: typing.Iterable[str]) -> int:
     :param filenames: Sequence of files passed to the hook
     :return: The exit code.
     """
-    visitor = PdbParser()
+    visitor = PdbParser(ignored=ignore)
     for file in filenames:
         visitor.current_file = file
         try:
