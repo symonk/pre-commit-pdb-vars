@@ -4,7 +4,7 @@ import dataclasses
 import os
 import typing
 
-PDB_SHORTCUTS = (
+PDB_SHORTCUTS = {
     "h",
     "w",
     "d",
@@ -40,7 +40,7 @@ PDB_SHORTCUTS = (
     "q",
     "debug",
     "retval",
-)
+}
 
 
 def main(argv: typing.Optional[typing.Sequence[str]] = None) -> int:
@@ -51,8 +51,9 @@ def main(argv: typing.Optional[typing.Sequence[str]] = None) -> int:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
+    parser.add_argument("ignore", nargs="*")
     args = parser.parse_args(argv)
-    return check_vars(args.filenames)
+    return check_vars(args.filenames, set(args.ignore))
 
 
 class PdbParser(ast.NodeVisitor):
@@ -66,12 +67,13 @@ class PdbParser(ast.NodeVisitor):
             :: More coming in future.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, ignored: typing.Set[str]) -> None:
         self.violations: typing.List[Violation] = []
+        self.ignore = ignored
         self.current_file = ""  # Todo: Terrible concept; refactor.
 
     def visit_Name(self, node: ast.Name) -> typing.Any:
-        if node.id in PDB_SHORTCUTS:
+        if node.id in PDB_SHORTCUTS - self.ignore:
             self.violations.append(
                 Violation(
                     self.current_file, "name", node.lineno, node.col_offset, node.id
@@ -112,7 +114,7 @@ def _walk_nodes(filepath: str, visitor: ast.NodeVisitor):
         visitor.visit(ast.parse(f.read(), filename=filepath))
 
 
-def check_vars(filenames: str):
+def check_vars(filenames: typing.Iterable[str]) -> int: 
     """
     For each of the file paths passed to the hook; parse the AST for the given file
     and find all variable names, then match them against the predefined `shortcuts`
