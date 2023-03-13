@@ -51,7 +51,7 @@ def main(argv: typing.Optional[typing.Sequence[str]] = None) -> int:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
-    parser.add_argument("ignore", nargs="*")
+    parser.add_argument("--ignore", action="store", nargs="*")
     args = parser.parse_args(argv)
     return check_vars(args.filenames, set(args.ignore))
 
@@ -81,7 +81,7 @@ class PdbParser(ast.NodeVisitor):
             )
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> typing.Any:
-        if node.name in PDB_SHORTCUTS:
+        if node.name in PDB_SHORTCUTS - self.ignore:
             self.violations.append(
                 Violation(
                     self.current_file,
