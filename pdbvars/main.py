@@ -51,7 +51,7 @@ def main(argv: typing.Optional[typing.Sequence[str]] = None) -> int:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
-    parser.add_argument("--ignore", action="store", nargs="*")
+    parser.add_argument("--ignore", action="store", nargs="*", default=set())
     args = parser.parse_args(argv)
     return check_vars(args.filenames, set(args.ignore))
 
